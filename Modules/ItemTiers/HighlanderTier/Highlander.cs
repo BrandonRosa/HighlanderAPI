@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using HighlanderAPI.Modules.ColorCatalogEntry;
-//using Augmentum.Modules.ColorCatalogEntry.CoreColors;
+using HighlanderAPI.Modules.ColorUtils;
+//using HighlanderAPI.Modules.ColorCatalogEntry.CoreColors;
 using HighlanderAPI.Modules.ItemTiers;
-using Augmentum.Modules.Utils;
+using HighlanderAPI.Modules.Utils;
+using HighlanderAPI.Modules.Artifacts;
 using R2API;
 using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using static HighlanderAPI.;
+using static HighlanderAPI.HighlanderAPI;
 
 namespace HighlanderAPI.Modules.ItemTiers.HighlanderTier
 {

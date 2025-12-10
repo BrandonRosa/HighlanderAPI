@@ -10,7 +10,7 @@ using On.RoR2.Items;
 using System.Linq;
 using HarmonyLib;
 
-namespace Augmentum.Modules.Pickups
+namespace HighlanderAPI.Modules.Artifacts
 {
 
 	public abstract class ArtifactBase<T> : ArtifactBase where T : ArtifactBase<T>
@@ -72,7 +72,7 @@ namespace Augmentum.Modules.Pickups
 
 		public bool IsSelectedAndInRun()
         {
-			return Augmentum.ArtifactStatusDictionary.GetValueOrDefault(this,false) && RunArtifactManager.instance && RunArtifactManager.instance.IsArtifactEnabled(ArtifactDef);
+			return HighlanderAPI.ArtifactStatusDictionary.GetValueOrDefault(this,false) && RunArtifactManager.instance && RunArtifactManager.instance.IsArtifactEnabled(ArtifactDef);
 
 		}
 

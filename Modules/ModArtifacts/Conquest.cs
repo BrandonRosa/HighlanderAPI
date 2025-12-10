@@ -1,8 +1,8 @@
 ﻿using BepInEx.Configuration;
-using Augmentum.Modules.Compatability;
-using Augmentum.Modules.ItemTiers.CoreTier;
-using Augmentum.Modules.ItemTiers.HighlanderTier;
-using Augmentum.Modules.Utils;
+using HighlanderAPI.Modules.Compatability;
+using HighlanderAPI.Modules.ItemTiers.CoreTier;
+using HighlanderAPI.Modules.ItemTiers.HighlanderTier;
+using HighlanderAPI.Modules.Utils;
 using R2API;
 using RoR2;
 using RoR2.Items;
@@ -11,10 +11,10 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
-using static Augmentum.Augmentum;
-using static Augmentum.Modules.Utils.ItemHelpers;
+using static HighlanderAPI.HighlanderAPI;
+using static HighlanderAPI.Modules.Utils.ItemHelpers;
 
-namespace Augmentum.Modules.Pickups.Items.Essences
+namespace HighlanderAPI.Modules.Artifacts
 {
     class Conquest : ArtifactBase<Conquest>
     {

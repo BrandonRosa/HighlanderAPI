@@ -101,13 +101,13 @@ namespace HighlanderAPI.Modules.ItemTiers
             if (backgroundTexture)
                 itemTierDef.bgIconTexture = backgroundTexture;
             
-            //Augmentum.ModLogger.LogWarning(itemTierDef.tier.ToString());
-            //Augmentum.ModLogger.LogWarning("Correct:"+ ItemTier.AssignedAtRuntime.ToString());
-            //Augmentum.ModLogger.LogWarning("MyTierName:" + itemTierDef.name);
-           // Augmentum.ModLogger.LogWarning("MyTierCanScrap:" + itemTierDef.canScrap);
+            //HighlanderAPI.ModLogger.LogWarning(itemTierDef.tier.ToString());
+            //HighlanderAPI.ModLogger.LogWarning("Correct:"+ ItemTier.AssignedAtRuntime.ToString());
+            //HighlanderAPI.ModLogger.LogWarning("MyTierName:" + itemTierDef.name);
+           // HighlanderAPI.ModLogger.LogWarning("MyTierCanScrap:" + itemTierDef.canScrap);
 
             //if(!itemTierDef.name.Equals(TierName))
-               // Augmentum.ModLogger.LogWarning("NAME DIDNT SAVE");
+               // HighlanderAPI.ModLogger.LogWarning("NAME DIDNT SAVE");
             //ItemTierDef.bgIconTexture.
             ContentAddition.AddItemTierDef(itemTierDef);
         }

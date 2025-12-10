@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using HighlanderAPI.Modules.ItemTiers;
 using HighlanderAPI.Modules.Utils;
+using HighlanderAPI.Modules.Artifacts;
 
 namespace HighlanderAPI
 {
@@ -38,7 +39,7 @@ namespace HighlanderAPI
         //public List<EquipmentBase> Equipments = new List<EquipmentBase>();
         public List<ItemTierBase> ItemTiers = new List<ItemTierBase>();
         //public List<EliteEquipmentBase> EliteEquipments = new List<EliteEquipmentBase>();
-        //public List<ArtifactBase> Artifacts = new List<ArtifactBase>();
+        public List<ArtifactBase> Artifacts = new List<ArtifactBase>();
         // public List<InteractableBase> Interactables = new List<InteractableBase>();
         // public List<SurvivorBase> Survivors = new List<SurvivorBase>();
 
@@ -46,7 +47,7 @@ namespace HighlanderAPI
         //public static Dictionary<EquipmentBase, bool> EquipmentStatusDictionary = new Dictionary<EquipmentBase, bool>();
         //public static Dictionary<BuffBase, bool> BuffStatusDictionary = new Dictionary<BuffBase, bool>();
         //public static Dictionary<EliteEquipmentBase, bool> EliteEquipmentStatusDictionary = new Dictionary<EliteEquipmentBase, bool>();
-        //public static Dictionary<ArtifactBase, bool> ArtifactStatusDictionary = new Dictionary<ArtifactBase, bool>();
+        public static Dictionary<ArtifactBase, bool> ArtifactStatusDictionary = new Dictionary<ArtifactBase, bool>();
         //public static Dictionary<InteractableBase, bool> InteractableStatusDictionary = new Dictionary<InteractableBase, bool>();
         // public static Dictionary<SurvivorBase, bool> SurvivorStatusDictionary = new Dictionary<SurvivorBase, bool>();
 
@@ -138,7 +139,7 @@ namespace HighlanderAPI
             //    }
             //}
 
-            //var disableItems = ConfigManager.ConfigOption<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in Augmentum?");
+            //var disableItems = ConfigManager.ConfigOption<bool>("Items", "Disable All Items?", false, "Do you wish to disable every item in HighlanderAPI?");
             //if (!disableItems)
             //{
             //    //Item Initialization
@@ -172,7 +173,7 @@ namespace HighlanderAPI
             //    //IL.RoR2.ShopTerminalBehavior.GenerateNewPickupServer_bool += ItemBase.BlacklistFromPrinter;
             //    On.RoR2.Items.ContagiousItemManager.Init += ItemBase.RegisterVoidPairings;
             //}
-            //var disableEquipment = ConfigManager.ConfigOption<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in Augmentum?");
+            //var disableEquipment = ConfigManager.ConfigOption<bool>("Equipment", "Disable All Equipment?", false, "Do you wish to disable every equipment in HighlanderAPI?");
             //if (!disableEquipment)
             //{
             //    //Equipment Initialization
