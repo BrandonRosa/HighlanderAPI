@@ -210,9 +210,11 @@ namespace HighlanderAPI.Modules.ItemTiers.HighlanderTier
                 }
             }
 
+            //Highlander Items that want to be dropped in the random pool should add themselfes using: AddRandomHighlanderDropOptionSelection
+            //Implimentations MUST check if the item is available before adding it to the selection.
             randomHighlanderDropSelector.Clear();
             OnBuildRandomHighlanderDropSelection?.Invoke(self);
-            //Highlander Items that want to be dropped in the random pool should add themselfes using: AddRandomHighlanderDropOptionSelection
+            
 
         }
 
@@ -284,6 +286,12 @@ namespace HighlanderAPI.Modules.ItemTiers.HighlanderTier
 
         private void DropItem(Transform location, float height)
         {
+            if(randomHighlanderDropSelector.Count==0)
+            {
+                Debug.LogWarning("[HighlanderAPI] No Highlander Tier Items have been added to the random drop selection! Cannot drop Highlander Item!");
+                return;
+            }
+
             if (Spoils.instance.IsSelectedAndInRun())
             {
                 PickupDropletController.CreatePickupDroplet(Spoils.SpoilsPickupInfo(location.position + Vector3.up * height), location.position + Vector3.up * height, Vector3.up * 25f);
