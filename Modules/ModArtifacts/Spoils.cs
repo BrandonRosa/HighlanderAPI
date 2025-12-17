@@ -1,19 +1,18 @@
 ﻿using BepInEx.Configuration;
-using HighlanderAPI.Modules.Compatability;
-using HighlanderAPI.Modules.ItemTiers.CoreTier;
 using HighlanderAPI.Modules.ItemTiers.HighlanderTier;
-using HighlanderAPI.Modules.Pickups.Items.Tier3;
 using HighlanderAPI.Modules.Utils;
 using R2API;
 using RoR2;
+using RoR2.ContentManagement;
 using RoR2.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
-using static HighlanderAPI.Augmentum;
+using static HighlanderAPI.HighlanderAPI;
 using static HighlanderAPI.Modules.Utils.ItemHelpers;
 
 namespace HighlanderAPI.Modules.Artifacts
@@ -28,7 +27,9 @@ namespace HighlanderAPI.Modules.Artifacts
         public override Sprite ArtifactIconDeselected => MainAssets.LoadAsset<Sprite>("Assets/Models/ArtifactOfSpoils/SpoilsDisable.png");
         public override Sprite ArtifactIconSelected => MainAssets.LoadAsset<Sprite>("Assets/Models/ArtifactOfSpoils/SpoilsEnabled.png");
 
-        public static int AdditionalChoices;
+        public static GameObject potentialPrefab = AssetAsyncReferenceManager<GameObject>.LoadAsset(new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPathsBetter.RoR2_DLC1_OptionPickup.OptionPickup_prefab)).WaitForCompletion();
+
+        public static ConfigEntry<int> AdditionalChoices;
 
         public override void Init(ConfigFile config)
         {
@@ -52,12 +53,12 @@ namespace HighlanderAPI.Modules.Artifacts
 
         public static GenericPickupController.CreatePickupInfo SpoilsPickupInfo(Transform position)
         {
-            return SpoilsPickupInfo(1 + AdditionalChoices, position);
+            return SpoilsPickupInfo(1 + AdditionalChoices.Value, position);
         }
 
         public static GenericPickupController.CreatePickupInfo SpoilsPickupInfo(Vector3 position)
         {
-            return SpoilsPickupInfo(1 + AdditionalChoices, position);
+            return SpoilsPickupInfo(1 + AdditionalChoices.Value, position);
         }
         public static GenericPickupController.CreatePickupInfo SpoilsPickupInfo(int count, Transform position)
         {
@@ -71,12 +72,12 @@ namespace HighlanderAPI.Modules.Artifacts
             GenericPickupController.CreatePickupInfo PickupInfo = new GenericPickupController.CreatePickupInfo
             {
                 pickerOptions = PickupPickerController.GenerateOptionsFromArray(pickupIndex),
-                prefabOverride = DiscoveryMedallion.potentialPrefab,
+                prefabOverride = potentialPrefab,
                 position = position,
                 rotation = Quaternion.identity,
                 pickupIndex = PickupCatalog.FindPickupIndex(Highlander.instance.itemTierDef._tier)
             };
-            PickupInfo.prefabOverride = DiscoveryMedallion.potentialPrefab;
+            PickupInfo.prefabOverride = potentialPrefab;
             return PickupInfo;
         }
     }

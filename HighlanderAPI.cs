@@ -248,10 +248,11 @@ namespace HighlanderAPI
 
         private void ValidateModCompatability()
         {
-            var enabledHIV = ConfigManager.ConfigOption("Mod Compatability: " + "HighItemVizability", "Enable Compatability Patches?", true, "Attempt to patch HighItemVizability (if installed) to work with this mod?");
-            if (ModCompatability.HighItemVizabilityCompat.IsHighItemVizabilityInstalled && enabledHIV)
+            var enabledJudgement = ConfigManager.ConfigOption("Mod Compatability: " + "Judgment", "Enable Compatability Patches?", true, "Attempt to add Judgment compatability (if installed)?", true).Value;
+            if (ModCompatability.JudgementCompat.IsJudgementInstalled && enabledJudgement)
             {
-                ModLogger.LogInfo("ModCompatability: " + "HighItemVizability Recognized!");
+                ModLogger.LogInfo("ModCompatability: " + "Judgment Recognized!");
+                ModCompatability.JudgementCompat.AddJudgementCompat = true;
             }
 
 

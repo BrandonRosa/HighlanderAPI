@@ -2,6 +2,7 @@
 using MonoMod.RuntimeDetour;
 using RiskOfOptions;
 using RiskOfOptions.Options;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,29 +16,43 @@ namespace HighlanderAPI.Modules.Utils
             public const string GUID = "com.rune580.riskofoptions";
             public static bool IsShareSuiteInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(GUID);
 
-            public static void AddConfig<T>(T config) where T : ConfigEntryBase
+            public static void AddConfig<T>(T config, bool requiresRestart) where T : ConfigEntryBase
             {
-                if(config is ConfigEntry<float>)
+                BaseOption option = null;
+                if (config is ConfigEntry<float>)
                 {
-                    ModSettingsManager.AddOption(new FloatFieldOption(config as ConfigEntry<float>));
-                    return;
+                    option = new FloatFieldOption(config as ConfigEntry<float>, requiresRestart);
                 }
-                if (config is ConfigEntry<bool>)
+                else if (config is ConfigEntry<bool>)
                 {
-                    ModSettingsManager.AddOption(new CheckBoxOption(config as ConfigEntry<bool>));
-                    return;
+                    option = new CheckBoxOption(config as ConfigEntry<bool>, requiresRestart);
                 }
-                if (config is ConfigEntry<int>)
+                else if (config is ConfigEntry<int>)
                 {
-                    ModSettingsManager.AddOption(new IntFieldOption(config as ConfigEntry<int>));
-                    return;
+                    option = new IntFieldOption(config as ConfigEntry<int>, requiresRestart);
                 }
-                if (config is ConfigEntry<string>)
+                else if (config is ConfigEntry<string>)
                 {
-                    ModSettingsManager.AddOption(new StringInputFieldOption(config as ConfigEntry<string>));
-                    return;
+                    option = new StringInputFieldOption(config as ConfigEntry<string>, requiresRestart);
                 }
+                else
+                {
+                    option = new RiskOfOptions.Options.ChoiceOption(config, requiresRestart);
+                }
+                ModSettingsManager.AddOption(option);
+                return;
             }
+        }
+
+        internal static class JudgementCompat
+        {
+            public static bool IsJudgementInstalled => BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.Nuxlar.Judgement");
+
+            public static bool AddJudgementCompat = true;
+
+            public static bool IsInJudgementRun() => IsJudgementInstalled && AddJudgementCompat && Run.instance.gameModeIndex == GameModeCatalog.FindGameModeIndex("xJudgementRun");
+
+
         }
 
         internal static class HighItemVizabilityCompat

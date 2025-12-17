@@ -42,12 +42,13 @@ namespace HighlanderAPI.Modules.Utils
             return false;
         }
 
-        public static T ConfigOption<T>(string section, string key, T defaultvalue, string description)
+        public static ConfigEntry<T> ConfigOption<T>(string section, string key, T defaultvalue, string description, bool restartRequired = false)
         {
             var config = HighlanderAPI.HLConfig.Bind<T>(section, key, defaultvalue, description);
+
             ConfigManager.HandleConfig<T>(config, HighlanderAPI.HLBackupConfig, key);
-            if (ModCompatability.RiskOfOptionsCompatability.IsShareSuiteInstalled)ModCompatability.RiskOfOptionsCompatability.AddConfig(config);
-            return config.Value;
+            if (ModCompatability.RiskOfOptionsCompatability.IsShareSuiteInstalled)ModCompatability.RiskOfOptionsCompatability.AddConfig(config,restartRequired);
+            return config;
         }
     }
 }

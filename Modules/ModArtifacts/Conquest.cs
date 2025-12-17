@@ -1,6 +1,5 @@
 ﻿using BepInEx.Configuration;
-using HighlanderAPI.Modules.Compatability;
-using HighlanderAPI.Modules.ItemTiers.CoreTier;
+using HighlanderAPI.Modules.Utils;
 using HighlanderAPI.Modules.ItemTiers.HighlanderTier;
 using HighlanderAPI.Modules.Utils;
 using R2API;

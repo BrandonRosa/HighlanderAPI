@@ -11,6 +11,7 @@ using RoR2;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using static HighlanderAPI.HighlanderAPI;
+using System.Linq;
 
 namespace HighlanderAPI.Modules.ItemTiers.HighlanderTier
 {
@@ -50,27 +51,41 @@ namespace HighlanderAPI.Modules.ItemTiers.HighlanderTier
 
         public static bool ChanceShrineScalePlayers = true;
 
+        public List<PickupIndex> availableHighlanderTierDropList = new List<PickupIndex>();
+
+        //All standard Highlanders will have a weight of 1.
+        private WeightedSelection<UniquePickup> randomHighlanderDropSelector = new WeightedSelection<UniquePickup>();
+        public void AddRandomHighlanderDropOptionSelection(ItemIndex itemIndex, float weight = 1f)
+        {
+            AddRandomHighlanderDropOptionSelection(new UniquePickup(PickupCatalog.FindPickupIndex(itemIndex)), weight);
+        }
+
+        public void AddRandomHighlanderDropOptionSelection(PickupIndex pickupIndex, float weight = 1f)
+        {
+            AddRandomHighlanderDropOptionSelection(new UniquePickup(pickupIndex), weight);
+        }
+
+        public void AddRandomHighlanderDropOptionSelection(UniquePickup uniquePickup, float weight = 1f)
+        {
+            randomHighlanderDropSelector.AddChoice(uniquePickup, weight);
+        }
+
+        public Action<Run> OnBuildRandomHighlanderDropSelection;
+
         public override Texture backgroundTexture => MainAssets.LoadAsset<Texture>("Assets/Textrures/Icons/TierBackground/BgHighlander.png");
 
-        //public ColorCatalog.ColorIndex colorIndex = ColorsAPI.RegisterColor(new Color32(21,99,58,255));//ColorCatalog.ColorIndex.Money;//CoreLight.instance.colorCatalogEntry.ColorIndex;
 
-        //public ColorCatalog.ColorIndex darkColorIndex = ColorsAPI.RegisterColor(new Color32(1,126,62,255));//ColorCatalog.ColorIndex.Money;//CoreDark.instance.colorCatalogEntry.ColorIndex;
-        /// <summary>
-        ///  CoreLight.instance.colorCatalogEntry.ColorIndex;
-        /// 
-        /// x => CoreDark.instance.colorCatalogEntry.ColorIndex;
-        /// </summary>
         public override void Init()
         {
-            colorIndex = Colors.TempHighlandLight;//ColorsAPI.RegisterColor(Color.gray);
-            darkColorIndex = Colors.TempHighlandDark;//ColorsAPI.RegisterColor(Color.gray);
+            colorIndex = Colors.TempHighlandLight;
+            darkColorIndex = Colors.TempHighlandDark;
             itemTierDef.pickupRules = ItemTierDef.PickupRules.ConfirmAll;
+            availableHighlanderTierDropList = new List<PickupIndex>();
 
             CreateDropletPrefab();
             CreateVFXPrefab();
             CreateTier();
-            //itemTierDef.highlightPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/UI/HighlightTier1Item.prefab").WaitForCompletion();
-            //itemTierDef.dropletDisplayPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/Common/VoidOrb.prefab").WaitForCompletion();
+
             SetHooks();
 
 
@@ -165,12 +180,40 @@ namespace HighlanderAPI.Modules.ItemTiers.HighlanderTier
 
         public void SetHooks()
         {
-            //On.RoR2.CharacterBody.OnInventoryChanged;
+            //Force Drop Behavior
             On.RoR2.CharacterMaster.OnItemAddedClient += CharacterMaster_OnItemAddedClient;
+
+            //Random Drop Behaviors
             On.RoR2.ShrineCombatBehavior.OnDefeatedServer += ShrineCombatBehavior_OnDefeatedServer;
             On.RoR2.BarrelInteraction.CoinDrop += BarrelInteraction_CoinDrop;
             On.RoR2.DeathRewards.OnKilledServer += DeathRewards_OnKilledServer;
             On.RoR2.ShrineChanceBehavior.AddShrineStack += ShrineChanceBehavior_AddShrineStack;
+
+            //Highlander Pool Behavior
+            On.RoR2.Run.BuildDropTable += Run_BuildDropTable;
+
+        }
+
+        private void Run_BuildDropTable(On.RoR2.Run.orig_BuildDropTable orig, Run self)
+        {
+            orig(self);
+            availableHighlanderTierDropList.Clear();
+            List<ItemDef> HLIDList= ItemHelpers.ItemDefsWithTier(this.itemTierDef);
+            foreach(ItemDef itemDef in HLIDList)
+            {
+                if(!self.availableItems.Contains(itemDef.itemIndex))
+                    continue;
+                PickupIndex pickupIndex = PickupCatalog.FindPickupIndex(itemDef.itemIndex);
+                if (!itemDef.tags.Contains(ItemTag.IgnoreForDropList) && itemDef.DoesNotContainTag(ItemTag.WorldUnique) && !availableHighlanderTierDropList.Contains(pickupIndex))
+                {
+                    availableHighlanderTierDropList.Add(pickupIndex);
+                }
+            }
+
+            randomHighlanderDropSelector.Clear();
+            OnBuildRandomHighlanderDropSelection?.Invoke(self);
+            //Highlander Items that want to be dropped in the random pool should add themselfes using: AddRandomHighlanderDropOptionSelection
+
         }
 
         private void ShrineChanceBehavior_AddShrineStack(On.RoR2.ShrineChanceBehavior.orig_AddShrineStack orig, ShrineChanceBehavior self, Interactor activator)
@@ -247,11 +290,11 @@ namespace HighlanderAPI.Modules.ItemTiers.HighlanderTier
             }
             else
             {
-                List<PickupDef> HighList = ItemHelpers.PickupDefsWithTier(this.itemTierDef);
-                int picked = RoR2Application.rng.RangeInt(0, HighList.Count);
+                //List<PickupDef> HighList = ItemHelpers.PickupDefsWithTier(this.itemTierDef);
+                //int picked = RoR2Application.rng.RangeInt(0, HighList.Count);
 
-                PickupDef pickupDef = HighList[picked];
-                PickupDropletController.CreatePickupDroplet(pickupDef.pickupIndex, location.position + Vector3.up * height, Vector3.up * 25f);
+                UniquePickup uniquePickup = PickupDropTable.GeneratePickupFromWeightedSelection(Run.instance.runRNG,randomHighlanderDropSelector);
+                PickupDropletController.CreatePickupDroplet(uniquePickup.pickupIndex, location.position + Vector3.up * height, Vector3.up * 25f);
             }
             Chat.SendBroadcastChat(new Chat.SimpleChatMessage
             {
